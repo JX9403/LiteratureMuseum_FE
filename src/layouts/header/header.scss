@@ -1,0 +1,26 @@
+.header {
+  &-top {
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  &-logo {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.bg-body-tertiary {
+  background-color: #f7f7ed;
+}
+
+.text-end {
+  a {
+    color: #f4bd0a;
+    transition: ease-out all 0.1s;
+  }
+  a:hover {
+    color: #f4bd0a;
+    font-weight: 700;
+  }
+}

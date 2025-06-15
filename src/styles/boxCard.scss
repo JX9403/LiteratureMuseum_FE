@@ -1,0 +1,25 @@
+.box-card {
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  &-time {
+    font-size: 0.9rem;
+  }
+
+  .image-container {
+    overflow: hidden;
+    width: 100%;
+    height: 200px;
+
+    img {
+      transition: transform 0.3s ease;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    img:hover {
+      transform: scale(1.1); /* Phóng to ảnh */
+    }
+  }
+}

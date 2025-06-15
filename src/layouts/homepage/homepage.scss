@@ -1,0 +1,141 @@
+.wrap-container {
+  background-color: #fff;
+  padding: 20px 20px;
+  border-radius: 8px;
+}
+
+.box {
+  &-left {
+  }
+
+  &-image {
+    overflow: hidden;
+    img {
+      width: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      &:hover {
+        transform: scale(1.1); /* Phóng to ảnh */
+      }
+    }
+  }
+
+  &-image-sm {
+    overflow: hidden;
+    img {
+      width: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      &:hover {
+        transform: scale(1.1); /* Phóng to ảnh */
+      }
+    }
+  }
+  &-item {
+    border-bottom: solid 1px #a50021;
+    padding: 1rem;
+  }
+
+  &-time {
+    margin-top: 1rem;
+    font-style: italic;
+    color: rgb(165, 165, 165);
+    font-size: 0.9rem;
+  }
+}
+
+.section-info {
+  .info {
+    &-box {
+      width: 100%;
+      margin: 10px;
+    }
+
+    &-icon {
+      i {
+        font-size: 2rem;
+      }
+
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    &-content {
+      padding-left: 40px;
+    }
+  }
+}
+
+a {
+  text-decoration: none !important;
+}
+
+// Title-------------------------------------------------------------
+.box-c {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.box-c {
+  height: 125px;
+}
+
+.box-c {
+  line-height: 125px;
+}
+
+.box-c a {
+  line-height: 125px;
+}
+/*------------------------------------*/
+/*------ Basic Underline Styles ------*/
+/*------------------------------------*/
+
+.normal-underline,
+.custom-underline {
+  position: relative;
+  display: inline-block;
+  font-size: 24px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.normal-underline,
+.normal-underline:hover {
+  color: #a50021;
+  text-decoration: underline;
+}
+
+.custom-underline,
+.custom-underline:hover,
+.custom-underline:focus,
+.custom-underline:active {
+  color: #a50021;
+  text-decoration: none;
+}
+
+.custom-underline::after {
+  content: "";
+  position: absolute;
+}
+
+/*--- Green Box (box-c) ---*/
+.box-c .custom-underline::after {
+  top: 70%;
+  height: 2px !important;
+  width: 40%;
+  left: 30%;
+  background-color: #a50021;
+  transition: 0.4s ease-out all 0.1s;
+}
+
+.box-c:hover .custom-underline::after {
+  width: 90%;
+  left: 5%;
+  transition: 0.5s ease all;
+}

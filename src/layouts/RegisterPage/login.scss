@@ -1,0 +1,25 @@
+.page-login {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+
+  .wrap {
+    width: 40%;
+
+    .login-header {
+      background-color: #a50021;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 500;
+      width: 100%;
+      text-align: center;
+      padding: 20px;
+      border-radius: 8px 8px 0 0;
+      margin-bottom: 20px;
+    }
+    .login-form {
+      padding: 20px;
+      width: 100%;
+    }
+  }
+}

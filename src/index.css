@@ -1,0 +1,24 @@
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f7f7ed;
+  --bs-dropdown-link-active-bg: #a50021 !important;
+
+  font-family: "Be Vietnam Pro", sans-serif !important;
+}
+
+a {
+  text-decoration: none;
+  color: #13130d;
+}
+
+a:hover {
+  color: #a50021;
+}
+
+pre {
+  font-family: "Be Vietnam Pro", sans-serif !important;
+}
