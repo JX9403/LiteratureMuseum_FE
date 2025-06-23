@@ -116,7 +116,7 @@ export default function ExhibitTable() {
               {exhibit.map((n) => (
                 <tr key={n.id}>
                   <th scope="row" style={{ textAlign: "center" }}>
-                    <NavLink to={`/exhibit/${n.id}`}>{n.id}</NavLink>
+                    <NavLink to={`/exhibits/${n.id}`}>{n.id}</NavLink>
                   </th>
                   <td>{n.name}</td>
                   <td>{n.type}</td>

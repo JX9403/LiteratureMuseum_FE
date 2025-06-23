@@ -2,30 +2,42 @@ import React, { useContext, useEffect, useState } from "react";
 
 import "./homepage.scss";
 import Carousel from "../../components/carousel/Carousel";
-import AuthorCard from "../../components/AuthorCard/AuthorCard";
-import NewsCard from "../../components/NewsCard/NewsCard";
-import WorkCard from "../../components/WorkCard/WorkCard";
+
 import { NavLink } from "react-router-dom";
 import { getAllAuthors } from "../../api/AuthorAPI";
 import { getAllNews } from "../../api/NewsAPI";
-import ImgDefault from "../../assets/images/cropped-logo-.png";
+import ImgDefault from "../../assets/images/Slide2.jpg";
 
 import { Loader } from "../../components/Loader/Loader";
 import { LoaderText } from "../../components/Loader/LoaderText";
 import { formatDate } from "../../utils/formatDate";
 import { LoginContext } from "../../context/LoginContext";
+import { getAllWorks } from "../../api/WorkAPI";
+import { getAllStories } from "../../api/StoryAPI";
+import { getAllExhibits } from "../../api/ExhibitAPI";
 
 export default function HomePage() {
   const [authors, setAuthors] = useState([]);
-  const [news, setNews] = useState([]);
   const [loadingAuthor, setLoadingAuthor] = useState(false);
+
+  const [news, setNews] = useState([]);
   const [loadingNews, setLoadingNews] = useState(false);
 
-  const { user } = useContext(LoginContext);
+  const [works, setWorks] = useState([]);
+  const [loadingWork, setLoadingWork] = useState(false);
+
+  const [exhibits, setExhibits] = useState([]);
+  const [loadingExhibits, setLoadingExhibits] = useState(false);
+
+  const [stories, setStories] = useState([]);
+  const [loadingStories, setLoadingStories] = useState(false);
 
   useEffect(() => {
     fetchAuthors();
     fetchNews();
+    fetchWorks();
+    fetchStories();
+    fetchExhibits();
   }, []);
 
   const fetchAuthors = async () => {
@@ -65,6 +77,58 @@ export default function HomePage() {
       setLoadingNews(false);
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu tin tức:", error);
+    }
+  };
+
+  const fetchWorks = async () => {
+    setLoadingWork(true);
+    try {
+      const data = await getAllWorks({
+        page: 0,
+        size: 3,
+        sort: "name,asc",
+        searchText: "",
+      });
+      console.log("works : ", data);
+      setWorks(data.content);
+      setLoadingWork(false);
+    } catch (error) {
+      console.error("Lỗi ", error);
+    }
+  };
+
+  const fetchStories = async () => {
+    setLoadingStories(true);
+    try {
+      const data = await getAllStories({
+        page: 0,
+        size: 3,
+        sort: "name,asc",
+        searchText: "",
+      });
+      console.log("stories: ", data);
+      setStories(data.content);
+      setLoadingStories(false);
+    } catch (error) {
+      console.error("Lỗi ", error);
+    }
+  };
+
+  const fetchExhibits = async () => {
+    setLoadingExhibits(true);
+    try {
+      const data = await getAllExhibits({
+        page: 0,
+        size: 3,
+        sort: "name,asc",
+        searchText: "",
+        type: "",
+      });
+
+      setExhibits(data.content);
+      setLoadingExhibits(false);
+    } catch (error) {
+      console.error("Lỗi ", error);
     }
   };
 
@@ -163,7 +227,7 @@ export default function HomePage() {
                   <div className="box-left">
                     {loadingNews === false && news.length > 0 ? (
                       <>
-                        <div className="box-image">
+                        <div className="box-image-lg">
                           <NavLink
                             to={`/news/${news[0]?.id}`}
                             key={news[0]?.id}
@@ -248,31 +312,30 @@ export default function HomePage() {
 
                   <div className="section-body wrap-container">
                     <div className="box-left">
-                      {loadingNews === false && news ? (
+                      {loadingAuthor === false && authors ? (
                         <>
-                          <div className="box-body">
+                          <div className="box-image-sm mb-4">
                             <NavLink
-                              to={`/news/${news[0]?.id}`}
-                              key={news[0]?.id}
-                            >
-                              <div className="box-title color-dark-text font-w-600  py-2 multiline-truncate mb-3 ">
-                                {news[0]?.title}
-                              </div>
-                            </NavLink>
-                          </div>
-                          <div className="box-image-sm">
-                            <NavLink
-                              to={`/news/${news[0]?.id}`}
-                              key={news[0]?.id}
+                              to={`/authors/${authors[0]?.id}`}
+                              key={authors[0]?.id}
                             >
                               <img
-                                src={news[0]?.files[0]?.fileUrl ?? ImgDefault}
+                                src={
+                                  authors[0]?.files[0]?.fileUrl ?? ImgDefault
+                                }
                                 alt="Tin tuc"
                               />
                             </NavLink>
                           </div>
-                          <div className="box-desc multiline-truncate text-center mt-2">
-                            {news[0]?.files[0]?.description}
+                          <div className="box-body">
+                            <NavLink
+                              to={`/authors/${authors[0]?.id}`}
+                              key={authors[0]?.id}
+                            >
+                              <div className="box-title color-dark-text font-w-600 font-s-20 text-center py-2 multiline-truncate mb-3 ">
+                                {authors[0]?.name}
+                              </div>
+                            </NavLink>
                           </div>
                         </>
                       ) : (
@@ -289,36 +352,34 @@ export default function HomePage() {
 
                     <hr className="border-2 my-4" />
                     <div className="box-right">
-                      {loadingNews === false && news ? (
-                        news.map((item) => (
+                      {loadingAuthor === false && authors ? (
+                        authors.map((item) => (
                           <div className="box-item" key={item.id}>
                             <div className="row">
                               <div className="col-3">
-                                <div className="box-image-sx">
-                                  <div className="box-image-sm">
-                                    <NavLink
-                                      to={`/news/${news[0]?.id}`}
-                                      key={news[0]?.id}
-                                    >
-                                      <img
-                                        src={
-                                          news[0]?.files[0]?.fileUrl ??
-                                          ImgDefault
-                                        }
-                                        alt="Tin tuc"
-                                      />
-                                    </NavLink>
-                                  </div>
+                                <div className="box-image-xs">
+                                  <NavLink
+                                    to={`/authors/${authors[0]?.id}`}
+                                    key={authors[0]?.id}
+                                  >
+                                    <img
+                                      src={
+                                        authors[0]?.files[0]?.fileUrl ??
+                                        ImgDefault
+                                      }
+                                      alt="Tac gia"
+                                    />
+                                  </NavLink>
                                 </div>
                               </div>
 
                               <div className="col-9">
                                 <NavLink
-                                  to={`/news/${item.id}`}
+                                  to={`/authors/${item.id}`}
                                   className="color-dark-text   multiline-truncate"
                                   key={item.id}
                                 >
-                                  {item?.title}
+                                  {item?.name}
                                 </NavLink>
                               </div>
                             </div>
@@ -331,7 +392,7 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-
+              {/* TAC PHAM */}
               <div className="col-4">
                 <div className="section-child">
                   <div className="box-c">
@@ -345,31 +406,28 @@ export default function HomePage() {
 
                   <div className="section-body wrap-container">
                     <div className="box-left">
-                      {loadingNews === false && news ? (
+                      {loadingWork === false && works ? (
                         <>
-                          <div className="box-body">
+                          <div className="box-image-sm mb-4">
                             <NavLink
-                              to={`/news/${news[0]?.id}`}
-                              key={news[0]?.id}
-                            >
-                              <div className="box-title color-dark-text font-w-600  py-2 multiline-truncate mb-3 ">
-                                {news[0]?.title}
-                              </div>
-                            </NavLink>
-                          </div>
-                          <div className="box-image-sm">
-                            <NavLink
-                              to={`/news/${news[0]?.id}`}
-                              key={news[0]?.id}
+                              to={`/works/${works[0]?.id}`}
+                              key={works[0]?.id}
                             >
                               <img
-                                src={news[0]?.files[0]?.fileUrl ?? ImgDefault}
+                                src={works[0]?.files[0]?.fileUrl ?? ImgDefault}
                                 alt="Tin tuc"
                               />
                             </NavLink>
                           </div>
-                          <div className="box-desc multiline-truncate text-center mt-2">
-                            {news[0]?.files[0]?.description}
+                          <div className="box-body">
+                            <NavLink
+                              to={`/works/${works[0]?.id}`}
+                              key={works[0]?.id}
+                            >
+                              <div className="box-title color-dark-text font-w-600 font-s-20 text-center py-2 multiline-truncate mb-3 ">
+                                {works[0]?.name}
+                              </div>
+                            </NavLink>
                           </div>
                         </>
                       ) : (
@@ -386,33 +444,36 @@ export default function HomePage() {
 
                     <hr className="border-2 my-4" />
                     <div className="box-right">
-                      {loadingNews === false && news ? (
-                        news.map((item) => (
+                      {loadingWork === false && works ? (
+                        works.map((item) => (
                           <div className="box-item" key={item.id}>
                             <div className="row">
                               <div className="col-3">
-                                <div className="box-image-sm">
-                                  <NavLink
-                                    to={`/news/${news[0]?.id}`}
-                                    key={news[0]?.id}
-                                  >
-                                    <img
-                                      src={
-                                        news[0]?.files[0]?.fileUrl ?? ImgDefault
-                                      }
-                                      alt="Tin tuc"
-                                    />
-                                  </NavLink>
+                                <div className="box-image-xs">
+                                  <div className="box-image-xs">
+                                    <NavLink
+                                      to={`/works/${works[0]?.id}`}
+                                      key={works[0]?.id}
+                                    >
+                                      <img
+                                        src={
+                                          works[0]?.files[0]?.fileUrl ??
+                                          ImgDefault
+                                        }
+                                        alt="Tac pham"
+                                      />
+                                    </NavLink>
+                                  </div>
                                 </div>
                               </div>
 
                               <div className="col-9">
                                 <NavLink
-                                  to={`/news/${item.id}`}
+                                  to={`/works/${item.id}`}
                                   className="color-dark-text   multiline-truncate"
                                   key={item.id}
                                 >
-                                  {item?.title}
+                                  {item?.name}
                                 </NavLink>
                               </div>
                             </div>
@@ -425,7 +486,7 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-
+              {/* Cau chuyen */}
               <div className="col-4">
                 <div className="section-child">
                   <div className="box-c">
@@ -439,27 +500,29 @@ export default function HomePage() {
 
                   <div className="section-body wrap-container">
                     <div className="box-left">
-                      {loadingNews === false && news ? (
+                      {loadingStories === false && stories ? (
                         <>
-                          <div className="box-body">
+                          <div className="box-image-sm mb-4">
                             <NavLink
-                              to={`/news/${news[0]?.id}`}
-                              key={news[0]?.id}
-                            >
-                              <div className="box-title color-dark-text font-w-600  py-2 multiline-truncate mb-3 ">
-                                {news[0]?.title}
-                              </div>
-                            </NavLink>
-                          </div>
-                          <div className="box-image-sm">
-                            <NavLink
-                              to={`/news/${news[0]?.id}`}
-                              key={news[0]?.id}
+                              to={`/stories/${stories[0]?.id}`}
+                              key={stories[0]?.id}
                             >
                               <img
-                                src={news[0]?.files[0]?.fileUrl ?? ImgDefault}
-                                alt="Tin tuc"
+                                src={
+                                  stories[0]?.files[0]?.fileUrl ?? ImgDefault
+                                }
+                                alt="Cau chuyen"
                               />
+                            </NavLink>
+                          </div>
+                          <div className="box-body">
+                            <NavLink
+                              to={`/stories/${stories[0]?.id}`}
+                              key={stories[0]?.id}
+                            >
+                              <div className="box-title color-dark-text font-w-600 font-s-20 text-center py-2 multiline-truncate mb-3 ">
+                                {stories[0]?.name}
+                              </div>
                             </NavLink>
                           </div>
                         </>
@@ -477,33 +540,36 @@ export default function HomePage() {
 
                     <hr className="border-2 my-4" />
                     <div className="box-right">
-                      {loadingNews === false && news ? (
-                        news.map((item) => (
+                      {loadingStories === false && stories ? (
+                        stories.map((item) => (
                           <div className="box-item" key={item.id}>
                             <div className="row">
                               <div className="col-3">
-                                <div className="box-image-sm">
-                                  <NavLink
-                                    to={`/news/${news[0]?.id}`}
-                                    key={news[0]?.id}
-                                  >
-                                    <img
-                                      src={
-                                        news[0]?.files[0]?.fileUrl ?? ImgDefault
-                                      }
-                                      alt="Tin tuc"
-                                    />
-                                  </NavLink>
+                                <div className="box-image-xs">
+                                  <div className="box-image-xs">
+                                    <NavLink
+                                      to={`/stories/${stories[0]?.id}`}
+                                      key={stories[0]?.id}
+                                    >
+                                      <img
+                                        src={
+                                          stories[0]?.files[0]?.fileUrl ??
+                                          ImgDefault
+                                        }
+                                        alt="Cau chuyen"
+                                      />
+                                    </NavLink>
+                                  </div>
                                 </div>
                               </div>
 
                               <div className="col-9">
                                 <NavLink
-                                  to={`/news/${item.id}`}
+                                  to={`/stories/${item.id}`}
                                   className="color-dark-text   multiline-truncate"
                                   key={item.id}
                                 >
-                                  {item?.title}
+                                  {item?.name}
                                 </NavLink>
                               </div>
                             </div>
@@ -511,96 +577,6 @@ export default function HomePage() {
                         ))
                       ) : (
                         <LoaderText />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="section-artifact">
-            <div className="row">
-              <div className="col-6">
-                <div className="section-child">
-                  <div className="box-c">
-                    <NavLink
-                      to="#"
-                      className="custom-underline font-s-30 font-w-700"
-                    >
-                      HIỆN VẬT
-                    </NavLink>
-                  </div>
-
-                  <div className="section-body wrap-container">
-                    <div className="box-left">
-                      {loadingNews === false && news ? (
-                        <>
-                          <div className="box-image-sm">
-                            <NavLink
-                              to={`/news/${news[0]?.id}`}
-                              key={news[0]?.id}
-                            >
-                              <img
-                                src={news[0]?.files[0]?.fileUrl ?? ImgDefault}
-                                alt="Tin tuc"
-                              />
-                            </NavLink>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="box-image">
-                            <Loader />
-                          </div>
-                          <div className="box-body">
-                            <LoaderText />
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-6">
-                <div className="section-child">
-                  <div className="box-c">
-                    <NavLink
-                      to="#"
-                      className="custom-underline font-s-30 font-w-700"
-                    >
-                      HÌNH ẢNH
-                    </NavLink>
-                  </div>
-
-                  <div className="section-body wrap-container">
-                    <div className="row">
-                      {loadingNews === false && news ? (
-                        <>
-                          <div className="col-6">
-                            <div className="box-image-sm">
-                              <NavLink
-                                to={`/news/${news[0]?.id}`}
-                                key={news[0]?.id}
-                              >
-                                <img
-                                  src={news[0]?.files[0]?.fileUrl ?? ImgDefault}
-                                  alt="Tin tuc"
-                                />
-                              </NavLink>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="box-image">
-                            <Loader />
-                          </div>
-                          <div className="box-body">
-                            <LoaderText />
-                          </div>
-                        </>
                       )}
                     </div>
                   </div>
@@ -618,14 +594,17 @@ export default function HomePage() {
 
             <div className="section-body wrap-container">
               <div className="row">
-                {loadingNews === false && news ? (
+                {loadingExhibits === false && exhibits ? (
                   <>
                     <div className="col-3">
                       <div className="box-image-sm">
-                        <NavLink to={`/news/${news[0]?.id}`} key={news[0]?.id}>
+                        <NavLink
+                          to={`/exhibits/${exhibits[0]?.id}`}
+                          key={exhibits[0]?.id}
+                        >
                           <img
-                            src={news[0]?.files[0]?.fileUrl ?? ImgDefault}
-                            alt="Tin tuc"
+                            src={exhibits[0]?.files[0]?.fileUrl ?? ImgDefault}
+                            alt="Trung bay"
                           />
                         </NavLink>
                       </div>

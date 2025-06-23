@@ -27,13 +27,6 @@ export default function NewsCard(props) {
             </NavLink>
           </div>
           <div className="box-time">{formatDate(news.createdAt || "")}</div>
-          {/* <p className="card-text multiline-truncate">
-            <div
-              dangerouslySetInnerHTML={{
-                __html: news?.content,
-              }}
-            />
-          </p> */}
         </div>
       </div>
     </div>

@@ -25,7 +25,7 @@ export default function BlogSearch({ onSearch }) {
       <div className="rounded">
         <div className="container p-4">
           <div className="row g-3 mb-3">
-            <div className="col-12 col-md-6">
+            <div className="col-12 col-md-8">
               <input
                 type="text"
                 className="form-control"
@@ -36,7 +36,7 @@ export default function BlogSearch({ onSearch }) {
               />
             </div>
 
-            <div className="col-12 col-md-3">
+            {/* <div className="col-12 col-md-3">
               <input
                 type="number"
                 className="form-control"
@@ -45,7 +45,7 @@ export default function BlogSearch({ onSearch }) {
                 onChange={(e) => setUserId(e.target.value)}
                 onKeyDown={handleKeyDown}
               />
-            </div>
+            </div> */}
 
             <div className="col-12 col-md-2">
               <select

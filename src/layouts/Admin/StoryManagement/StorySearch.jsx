@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "flatpickr/dist/flatpickr.min.css";
 import { getAllAuthors } from "../../../api/AuthorAPI";
 
-export default function Storiesearch({ onSearch }) {
+export default function StorySearch({ onSearch }) {
   const [keyword, setKeyword] = useState("");
   const [sortOption, setSortOption] = useState("name,asc");
   const [authorId, setAuthorId] = useState("");

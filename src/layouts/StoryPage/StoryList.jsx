@@ -1,70 +1,50 @@
 import React, { useEffect, useState } from "react";
+import StorySearch from "../Admin/StoryManagement/StorySearch";
 
 import { useNavigate } from "react-router-dom";
-
-import { Pagi } from "../../components/Pagi/Pagi";
-import { Story } from "../../model/StoryModel";
-import { getAllStory } from "../../api/StoryAPI";
+import { getAllStories } from "../../api/StoryAPI";
 import StoryCard from "../../components/StoryCard/StoryCard";
-import StorySearch from "../Admin/StoryManagement/StorySearch";
+import { Pagi } from "../../components/Pagi/Pagi";
 
 export default function StoryList() {
   const [story, setStory] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [searchParams, setSearchParams] = useState({
-    searchText: "",
-    searchField: "title",
-    sortOption: "asc",
-    startDate: "",
-    endDate: "",
-  });
-  const pageSize = 10;
-
-  const navigate = useNavigate();
+  const [page, setPage] = useState(0);
+  const [sort, setSort] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [authorId, setAuthorId] = useState(0);
 
   useEffect(() => {
     fetchStory();
-  }, [currentPage, searchParams]);
+  }, [page, searchText, sort, authorId]);
 
   const fetchStory = async () => {
     try {
-      const data = await getAllStory(
-        currentPage,
-        pageSize,
-        searchParams.searchText,
-        searchParams.searchField, // thêm searchField ở đây
-        searchParams.sortOption,
-        searchParams.startDate,
-        searchParams.endDate
-      );
-      console.log("Get all story: ", data);
+      const data = await getAllStories({
+        page: page,
+        size: 10,
+        sort: sort || "name,asc",
+        searchText: searchText || "",
+        authorId: authorId,
+      });
+
       setStory(data.content);
       setTotalPages(data.totalPages);
     } catch (error) {
-      console.error("Lỗi khi lấy dữ liệu bài báo:", error);
+      console.error("Lỗi ", error);
     }
   };
 
-  const handleSearch = (
-    searchText,
-    searchField,
-    sortOption,
-    startDate,
-    endDate
-  ) => {
-    setCurrentPage(0); // reset về trang đầu
-    setSearchParams({
-      searchText,
-      searchField,
-      sortOption,
-      startDate,
-      endDate,
-    });
+  const handleSearch = (searchText, sort, authorId) => {
+    console.log("from table: ", { searchText, sort, authorId });
+    setPage(0);
+    setSearchText(searchText);
+    setSort(sort);
+    setAuthorId(authorId);
   };
 
   const pagi = (current) => {
-    setCurrentPage(current);
+    setPage(current);
   };
   return (
     <>
@@ -72,17 +52,16 @@ export default function StoryList() {
         <StorySearch onSearch={handleSearch} />
       </div>
 
-      <div className="page-list">
+      <div className="page-list mb-4">
         <div className="container">
-          <h3 className="row color-red-text font-w-900">Danh sách bài báo</h3>
-          <div className="row">
+          <div className="row g-3">
             {story.map((story, index) => (
-              <StoryCard story={story} key={index} />
+              <StoryCard story={story} key={index} column={4} />
             ))}
           </div>
         </div>
       </div>
-      <Pagi current={currentPage + 1} totalPages={totalPages} pagi={pagi} />
+      <Pagi current={page + 1} totalPages={totalPages} pagi={pagi} />
     </>
   );
 }

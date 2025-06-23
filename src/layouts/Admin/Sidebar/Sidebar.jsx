@@ -63,6 +63,19 @@ export default function Sidebar() {
             Quản lý tác giả
           </NavLink>
         </li>
+
+        <li>
+          <NavLink
+            to="/admin/artifacts"
+            className="nav-link"
+            aria-current="page"
+          >
+            <svg className="bi me-2" width="16" height="16">
+              <use xlinkHref="#speedometer2" />
+            </svg>
+            Quản lý hiện vật
+          </NavLink>
+        </li>
         <li>
           <NavLink to="/admin/works" className="nav-link" aria-current="page">
             <svg className="bi me-2" width="16" height="16">
@@ -85,16 +98,6 @@ export default function Sidebar() {
               <use xlinkHref="#speedometer2" />
             </svg>
             Quản lý người dùng
-          </NavLink>
-        </li>
-
-        <hr />
-        <li>
-          <NavLink to="/admin/account" className="nav-link" aria-current="page">
-            <svg className="bi me-2" width="16" height="16">
-              <use xlinkHref="#speedometer2" />
-            </svg>
-            Quản lý tài khoản
           </NavLink>
         </li>
       </ul>

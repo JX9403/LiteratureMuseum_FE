@@ -1,11 +1,31 @@
-import React, { useContext } from "react";
-
+import React, { useContext, useEffect, useState } from "react";
 import logo from "../../assets/images/cropped-logo-.png";
 import "./header.scss";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { LoginContext } from "../../context/LoginContext";
+import { getUserByEmail } from "../../api/UserAPI";
+
 export default function Header() {
   const { logout, user } = useContext(LoginContext);
+  const [account, setAccount] = useState(null);
+  const navigate = useNavigate();
+
+  const fetchUserByEmail = async () => {
+    try {
+      const data = await getUserByEmail(user);
+      setAccount(data);
+    } catch (error) {
+      console.error("Lỗi ", error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchUserByEmail();
+    }
+  }, [user]);
+
+  console.log("User login", account);
 
   return (
     <div className="header color-primary-bg">
@@ -22,16 +42,80 @@ export default function Header() {
               aria-expanded="false"
             ></button>
 
-            <ul
-              className="dropdown-menu dropdown-menu-end"
-              aria-labelledby="userDropdown"
-            >
-              <li>
-                <button className="dropdown-item text-danger" onClick={logout}>
-                  Đăng xuất
-                </button>
-              </li>
-            </ul>
+            {account && account.role === "ADMIN" && (
+              <>
+                <ul
+                  className="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="userDropdown"
+                >
+                  <li>
+                    <button
+                      className="dropdown-item "
+                      onClick={() => navigate("/admin")}
+                    >
+                      Trang quản trị
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item"
+                      onClick={() =>
+                        navigate("/change-password", { state: { account } })
+                      }
+                    >
+                      Đổi mật khẩu
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      className="dropdown-item text-danger"
+                      onClick={logout}
+                    >
+                      Đăng xuất
+                    </button>
+                  </li>
+                </ul>
+              </>
+            )}
+
+            {account && account.role === "USER" && (
+              <>
+                <ul
+                  className="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="userDropdown"
+                >
+                  <li>
+                    <button
+                      className="dropdown-item "
+                      onClick={() => navigate("/manage-blog")}
+                    >
+                      Quản lý bài đăng
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      className="dropdown-item"
+                      onClick={() =>
+                        navigate("/change-password", { state: { account } })
+                      }
+                    >
+                      Đổi mật khẩu
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      className="dropdown-item text-danger"
+                      onClick={logout}
+                    >
+                      Đăng xuất
+                    </button>
+                  </li>
+                </ul>
+              </>
+            )}
           </div>
         ) : (
           <div className="text-end">
@@ -40,7 +124,8 @@ export default function Header() {
           </div>
         )}
       </div>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary ">
+
+      <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container">
           <NavLink className="navbar-brand" to="/">
             <img className="header-logo" src={logo} alt="logo" />
@@ -59,21 +144,17 @@ export default function Header() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item me-3">
-                <NavLink className="nav-link" aria-current="page" to="/">
+                <NavLink className="nav-link" to="/">
                   TRANG CHỦ
                 </NavLink>
               </li>
               <li className="nav-item me-3">
-                <NavLink
-                  className="nav-link"
-                  aria-current="page"
-                  to="/introduction"
-                >
+                <NavLink className="nav-link" to="/introduction">
                   GIỚI THIỆU
                 </NavLink>
               </li>
               <li className="nav-item me-3">
-                <NavLink className="nav-link " aria-current="page" to="/news">
+                <NavLink className="nav-link" to="/news">
                   TIN TỨC
                 </NavLink>
               </li>
@@ -89,73 +170,42 @@ export default function Header() {
                 </a>
                 <ul className="dropdown-menu">
                   <li>
-                    <NavLink
-                      className="dropdown-item "
-                      aria-current="page"
-                      to="/authors"
-                    >
+                    <NavLink className="dropdown-item" to="/authors">
                       Tác giả
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink
-                      className="dropdown-item "
-                      aria-current="page"
-                      to="/works"
-                    >
+                    <NavLink className="dropdown-item" to="/works">
                       Tác phẩm
                     </NavLink>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <NavLink className="dropdown-item" to="/stories">
                       Câu chuyện
-                    </a>
+                    </NavLink>
                   </li>
                 </ul>
               </li>
-
               <li className="nav-item me-3">
-                <NavLink className="nav-link " aria-current="page" to="/map">
-                  BẢN ĐỒ VĂN HỌC
+                <NavLink className="nav-link" to="/awards">
+                  GIẢI THƯỞNG
+                </NavLink>
+              </li>
+              <li className="nav-item me-3">
+                <NavLink className="nav-link" to="/exhibits">
+                  TRƯNG BÀY
+                </NavLink>
+              </li>
+              <li className="nav-item me-3">
+                <NavLink className="nav-link" to="/artifacts">
+                  HIỆN VẬT
                 </NavLink>
               </li>
 
-              <li className="nav-item me-3 dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  TRƯNG BÀY
-                </a>
-                <ul className="dropdown-menu">
-                  <li>
-                    <NavLink
-                      className="dropdown-item "
-                      aria-current="page"
-                      to="#"
-                    >
-                      Thường xuyên
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      className="dropdown-item "
-                      aria-current="page"
-                      to="/news"
-                    >
-                      Chuyên đề
-                    </NavLink>
-                  </li>
-                </ul>
-              </li>
-
               <li className="nav-item me-3">
-                <a className="nav-link" aria-current="page" href="#">
-                  BẢNG XẾP HẠNG
-                </a>
+                <NavLink className="nav-link" to="/blogs">
+                  DIỄN ĐÀN THẢO LUẬN
+                </NavLink>
               </li>
             </ul>
           </div>

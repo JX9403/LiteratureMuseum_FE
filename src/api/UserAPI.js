@@ -29,7 +29,7 @@ export const getAllUsers = async (
 
 export const getUserByEmail = async (email) => {
   try {
-    const res = await http.get(`/api/users/${email}`);
+    const res = await http.get(`/api/users/email?email=${email}`);
     return res.data;
   } catch (err) {
     console.error("Lỗi: ", err.response?.data);

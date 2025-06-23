@@ -114,7 +114,7 @@ export default function StoryTable() {
               {story.map((n) => (
                 <tr key={n.id}>
                   <th scope="row" style={{ textAlign: "center" }}>
-                    <NavLink to={`/story/${n.id}`}>{n.id}</NavLink>
+                    <NavLink to={`/stories/${n.id}`}>{n.id}</NavLink>
                   </th>
                   <td>{n.name}</td>
 

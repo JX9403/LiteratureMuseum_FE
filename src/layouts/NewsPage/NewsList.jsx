@@ -51,7 +51,7 @@ export default function NewsList() {
 
       <div className="page-list mb-4">
         <div className="container">
-          <div className="row ">
+          <div className="row g-3">
             {news.map((news, index) => (
               <NewsCard news={news} key={index} />
             ))}

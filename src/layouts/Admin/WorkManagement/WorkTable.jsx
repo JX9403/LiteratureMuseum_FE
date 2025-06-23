@@ -114,7 +114,7 @@ export default function WorkTable() {
               {work.map((n) => (
                 <tr key={n.id}>
                   <th scope="row" style={{ textAlign: "center" }}>
-                    <NavLink to={`/work/${n.id}`}>{n.id}</NavLink>
+                    <NavLink to={`/works/${n.id}`}>{n.id}</NavLink>
                   </th>
                   <td>{n.name}</td>
 

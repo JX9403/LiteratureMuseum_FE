@@ -103,7 +103,9 @@ export default function UserTable() {
               {user.map((n) => (
                 <tr key={n.id}>
                   <th scope="row" style={{ textAlign: "center" }}>
-                    <NavLink to={`/user/${n.id}`}>{n.id}</NavLink>
+                    <NavLink to="/admin/users/blog" state={{ id: n.id }}>
+                      {n.id}
+                    </NavLink>
                   </th>
                   <td>{n.email}</td>
 

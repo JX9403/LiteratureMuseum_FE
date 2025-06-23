@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Pagi } from "../../../components/Pagi/Pagi";
-import { deleteBlog, getAllBlogs } from "../../../api/BlogAPI";
+import { deleteBlog, getAllBlogs, updateBlog } from "../../../api/BlogAPI";
 import BlogSearch from "./BlogSearch";
 import { formatDate } from "../../../utils/formatDate";
+
+const STATUS_OPTIONS = ["PENDING", "APPROVED", "REJECTED"];
 
 export default function BlogTable() {
   const [blog, setBlog] = useState([]);
@@ -33,7 +35,6 @@ export default function BlogTable() {
         sort: sort || "createdAt,desc",
         searchText: searchText || "",
       });
-
       setBlog(data.content);
       setTotalPages(data.totalPages);
     } catch (error) {
@@ -42,43 +43,69 @@ export default function BlogTable() {
   };
 
   const handleSearch = (searchText, sort) => {
-    console.log("from table: ", { searchText, sort });
     setPage(0);
     setSearchText(searchText);
     setSort(sort);
   };
 
   const handleDelete = (id) => {
-    try {
-      setBlogToDelete(id);
-      setShowModal(true);
-    } catch (err) {
-      console.error("❌ Lỗi :", err);
-    }
+    setBlogToDelete(id);
+    setShowModal(true);
   };
 
   const confirmDelete = async (id) => {
     try {
       await deleteBlog(id);
       setBlog(blog.filter((n) => n.id !== id));
-      setToastBg("success");
-      setToastMessage("Cập nhật thành công!");
-      setShowToast(true);
-
-      setTimeout(() => {
-        setShowToast(false);
-      }, 2000);
+      showSuccessToast("Xóa thành công!");
     } catch (error) {
-      setToastBg("danger");
-      setToastMessage(error.message);
-      setShowToast(true);
-
-      setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
+      showErrorToast(error.message);
     }
     setShowModal(false);
     setBlogToDelete(null);
+  };
+
+  const handleStatusChange = async (blogItem, newStatus) => {
+    try {
+      const result = await updateBlog({
+        id: blogItem.id,
+        name: blogItem.name,
+        content: blogItem.content,
+        status: newStatus,
+        userId: blogItem.userId,
+      });
+      setBlog((prev) => prev.map((b) => (b.id === blogItem.id ? result : b)));
+      showSuccessToast("Cập nhật trạng thái thành công!");
+    } catch (err) {
+      showErrorToast("Cập nhật thất bại!");
+    }
+  };
+
+  const getStatusClass = (status) => {
+    switch (status) {
+      case "PENDING":
+        return "btn-warning";
+      case "APPROVED":
+        return "btn-success";
+      case "REJECTED":
+        return "btn-danger";
+      default:
+        return "btn-secondary";
+    }
+  };
+
+  const showSuccessToast = (msg) => {
+    setToastBg("success");
+    setToastMessage(msg);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
+
+  const showErrorToast = (msg) => {
+    setToastBg("danger");
+    setToastMessage(msg);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
   };
 
   const pagi = (current) => {
@@ -90,8 +117,8 @@ export default function BlogTable() {
       <div className="manage-blog-table">
         <BlogSearch onSearch={handleSearch} />
         <div
-          className="btn btn-primary "
-          style={{ "margin-left": "10px" }}
+          className="btn btn-primary"
+          style={{ marginLeft: "10px" }}
           onClick={() => navigate("/admin/blogs/create")}
         >
           Thêm mới
@@ -102,10 +129,9 @@ export default function BlogTable() {
             <thead>
               <tr>
                 <th style={{ width: "5%", textAlign: "center" }}>#</th>
-                <th style={{ width: "40%" }}>Tên</th>
-
+                <th style={{ width: "30%" }}>Tên</th>
                 <th style={{ width: "15%" }}>Ngày đăng</th>
-
+                <th style={{ width: "20%" }}>Trạng thái</th>
                 <th style={{ width: "10%", textAlign: "center" }}>Xóa</th>
               </tr>
             </thead>
@@ -113,12 +139,37 @@ export default function BlogTable() {
               {blog.map((n) => (
                 <tr key={n.id}>
                   <th scope="row" style={{ textAlign: "center" }}>
-                    <NavLink to={`/blog/${n.id}`}>{n.id}</NavLink>
+                    <NavLink to={`/blogs/${n.id}`}>{n.id}</NavLink>
                   </th>
                   <td>{n.name}</td>
-
                   <td>{formatDate(n.createdAt)}</td>
-
+                  <td>
+                    <div className="dropdown">
+                      <button
+                        className={`btn dropdown-toggle ${getStatusClass(
+                          n.status
+                        )}`}
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        {n.status}
+                      </button>
+                      <ul className="dropdown-menu">
+                        {STATUS_OPTIONS.map((status) => (
+                          <li key={status}>
+                            <button
+                              className="dropdown-item"
+                              onClick={() => handleStatusChange(n, status)}
+                              disabled={n.status === status}
+                            >
+                              {status}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </td>
                   <td className="text-center">
                     <button
                       className="btn btn-danger"
@@ -135,6 +186,7 @@ export default function BlogTable() {
 
         <Pagi current={page + 1} totalPages={totalPages} pagi={pagi} />
 
+        {/* Toast */}
         <div
           className={`toast position-fixed top-0 end-0 m-3 text-white bg-${toastBg} show`}
           role="alert"
@@ -157,6 +209,7 @@ export default function BlogTable() {
         </div>
       </div>
 
+      {/* Modal xác nhận xóa */}
       {showModal && (
         <>
           <div className="modal-backdrop fade show"></div>

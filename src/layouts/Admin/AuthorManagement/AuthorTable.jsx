@@ -111,7 +111,7 @@ export default function AuthorTable() {
               {author.map((n) => (
                 <tr key={n.id}>
                   <th scope="row" style={{ textAlign: "center" }}>
-                    <NavLink to={`/author/${n.id}`}>{n.id}</NavLink>
+                    <NavLink to={`/authors/${n.id}`}>{n.id}</NavLink>
                   </th>
                   <td>{n.name}</td>
 

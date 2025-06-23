@@ -92,7 +92,7 @@ export default function AwardTable() {
         <div
           className="btn btn-primary "
           style={{ "margin-left": "10px" }}
-          onClick={() => navigate("/admin/award/create")}
+          onClick={() => navigate("/admin/awards/create")}
         >
           Thêm mới
         </div>
@@ -111,7 +111,7 @@ export default function AwardTable() {
               {award.map((n) => (
                 <tr key={n.id}>
                   <th scope="row" style={{ textAlign: "center" }}>
-                    <NavLink to={`/award/${n.id}`}>{n.id}</NavLink>
+                    <NavLink to={`/awards/${n.id}`}>{n.id}</NavLink>
                   </th>
                   <td>{n.name}</td>
 

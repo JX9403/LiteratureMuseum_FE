@@ -22,7 +22,7 @@ export default function AuthorList() {
       const data = await getAllAuthors({
         page: page,
         size: 10,
-        sort: sort || "",
+        sort: sort || "name,asc",
         searchText: searchText || "",
       });
 
@@ -51,9 +51,9 @@ export default function AuthorList() {
 
       <div className="page-list mb-4">
         <div className="container">
-          <div className="row ">
+          <div className="row g-3 ">
             {author.map((author, index) => (
-              <AuthorCard author={author} key={index} />
+              <AuthorCard author={author} key={index} column={3} />
             ))}
           </div>
         </div>

@@ -4,7 +4,7 @@ import defaultImage from "../../assets/images/Slide2.jpg";
 
 export default function AuthorCard(props) {
   return (
-    <div className="col-3 " key={props.author.id}>
+    <div className={`col-${props.column}`} key={props.author.id}>
       <div className="box-card">
         <NavLink
           to={`/authors/${props.author.id}`}
@@ -12,7 +12,7 @@ export default function AuthorCard(props) {
         >
           <div className="image-container">
             <img
-              src={props.author?.listImages?.[0]?.url ?? defaultImage}
+              src={props.author?.files?.[0]?.fileUrl ?? defaultImage}
               className="card-img-top"
               alt="..."
             />

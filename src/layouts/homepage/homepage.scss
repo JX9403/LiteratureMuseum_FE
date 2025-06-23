@@ -8,9 +8,10 @@
   &-left {
   }
 
-  &-image {
+  &-image-xs {
     overflow: hidden;
     img {
+      height: 40px;
       width: 100%;
       object-fit: cover;
       transition: transform 0.3s ease;
@@ -23,6 +24,20 @@
   &-image-sm {
     overflow: hidden;
     img {
+      height: 250px;
+      width: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      &:hover {
+        transform: scale(1.1); /* Phóng to ảnh */
+      }
+    }
+  }
+
+  &-image-lg {
+    overflow: hidden;
+    img {
+      height: 400px;
       width: 100%;
       object-fit: cover;
       transition: transform 0.3s ease;

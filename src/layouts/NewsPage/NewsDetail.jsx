@@ -1,15 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getAllNews, getNewsById } from "../../api/NewsAPI";
 import { LoaderText } from "../../components/Loader/LoaderText";
 import { formatDate } from "../../utils/formatDate";
+import { LoginContext } from "../../context/LoginContext";
+import Comment from "../../components/Comment/Comment";
+import { getUserByEmail } from "../../api/UserAPI";
 
 export default function NewsDetail() {
   const { id } = useParams(); // Lấy ID từ URL
-
+  const { user } = useContext(LoginContext);
+  const [account, setAccount] = useState(null);
   const [news, setNews] = useState(null);
   const [listNews, setListNews] = useState([]);
+  // Lấy thông tin người dùng hiện tại
+  const fetchUserByEmail = async () => {
+    try {
+      const data = await getUserByEmail(user);
+      setAccount(data);
+      console.log("user from news ", data);
+    } catch (error) {
+      console.error("Lỗi khi lấy user:", error);
+    }
+  };
 
+  useEffect(() => {
+    if (user) {
+      fetchUserByEmail();
+    }
+  }, [user]);
   // Hàm để gọi API lấy thông tin tác giả
   const fetchNewsById = async (newsId) => {
     try {
@@ -53,6 +72,7 @@ export default function NewsDetail() {
         <div className="row">
           <div className="col-8">
             <h3 className="news-title  font-w-600 pb-4 mb-4">{news?.name}</h3>
+            <div className="box-time">{formatDate(news?.createdAt)}</div>
 
             <div
               className="news-content pt-4"
@@ -85,6 +105,16 @@ export default function NewsDetail() {
                 <LoaderText />
               )}
             </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-12">
+            <Comment
+              targetId={parseInt(id)}
+              targetType="NEWS"
+              userId={account?.id}
+            />
           </div>
         </div>
       </div>

@@ -43,7 +43,7 @@ export const getArtifactById = async (id) => {
 };
 
 
-export const getAllArtifact = async (
+export const getAllArtifacts = async (
   {
     page,
     size,

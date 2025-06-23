@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-import { getAllAuthors, getAuthorById } from "../../api/AuthorAPI";
+import { getAuthorById } from "../../api/AuthorAPI";
 import { LoaderText } from "../../components/Loader/LoaderText";
 import { formatDate } from "../../utils/formatDate";
+import { getAllStories, getAllStoryByAuthor } from "../../api/StoryAPI";
+import { getAllWorkByAuthor } from "../../api/WorkAPI";
 
 export default function AuthorDetail() {
   const { id } = useParams(); // Lấy ID từ URL
 
   const [author, setAuthor] = useState(null);
-  const [listAuthor, setListAuthor] = useState([]);
+  const [stories, setStories] = useState([]);
+  const [works, setWorks] = useState([]);
 
   // Hàm để gọi API lấy thông tin tác giả
   const fetchAuthorById = async (authorId) => {
@@ -21,23 +24,41 @@ export default function AuthorDetail() {
     }
   };
 
-  const fetchAuthor = async () => {
+  const fetchStories = async () => {
     try {
-      const data = await getAllAuthors({
+      const data = await getAllStories({
         page: 0,
-        size: 5,
-        sort: "name,desc",
-        searchText: "",
+        size: 3,
+        sort: "name,asc",
       });
 
-      setListAuthor(data.content);
+      setStories(data.content);
     } catch (error) {
       console.error("Lỗi ", error);
     }
   };
 
   useEffect(() => {
-    fetchAuthor();
+    fetchStories();
+  }, []);
+
+  const fetchWorks = async () => {
+    try {
+      const data = await getAllWorkByAuthor({
+        page: 0,
+        size: 3,
+        sort: "name,asc",
+        authorId: id || 0,
+      });
+
+      setWorks(data.content);
+    } catch (error) {
+      console.error("Lỗi ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorks();
   }, []);
 
   // Gọi API khi component load
@@ -63,24 +84,43 @@ export default function AuthorDetail() {
           </div>
 
           <div className="col-4">
-            <div className="box-right p-3">
+            <div className="box-right p-3 mb-3">
               <h5 className="author-title  font-w-500 mb-4 pt-3">
-                Bài viết mới nhất
+                Câu chuyện nhà văn
               </h5>
               <hr />
-              {listAuthor.length > 0 ? (
-                listAuthor.map((item) => (
+
+              {stories.length > 0 ? (
+                stories.map((item) => (
                   <div className="box-item ">
                     <NavLink
-                      to={`/author/${item.id}`}
+                      to={`/stories/${item.id}`}
                       className="color-dark-text  multiline-truncate"
                       key={item.id}
                     >
                       {item?.name}
                     </NavLink>
-                    <div className="box-time">
-                      {formatDate(item?.createdAt)}
-                    </div>
+                  </div>
+                ))
+              ) : (
+                <LoaderText />
+              )}
+            </div>
+            <div className="box-right p-3 ">
+              <h5 className="author-title  font-w-500 mb-4 pt-3">
+                Tác phẩm văn học
+              </h5>
+              <hr />
+              {works.length > 0 ? (
+                works.map((item) => (
+                  <div className="box-item ">
+                    <NavLink
+                      to={`/works/${item.id}`}
+                      className="color-dark-text  multiline-truncate"
+                      key={item.id}
+                    >
+                      {item?.name}
+                    </NavLink>
                   </div>
                 ))
               ) : (

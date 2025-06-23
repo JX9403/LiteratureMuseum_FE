@@ -8,14 +8,14 @@ export default function StoryPage() {
     <div className="page-story color-primary-bg ">
       <div className="page-header">
         <div className="overlay">
-          <h1 className="header-text-top color-light-text ">TIN TỨC</h1>
+          <h1 className="header-text-top color-light-text ">CÂU CHUYỆN</h1>
           <div className="header-text color-light-text ">
             <NavLink to="/" className="color-light-text">
               Trang chủ
             </NavLink>
             <span className="separator color-light-text"> / </span>
-            <NavLink to="/story" className="color-light-text">
-              Tin tức
+            <NavLink to="/stories" className="color-light-text">
+              Câu chuyện
             </NavLink>
           </div>
         </div>
